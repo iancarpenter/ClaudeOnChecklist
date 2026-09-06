@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Packing Checklist</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22><text y=%2214%22 font-size=%2214%22>🎒</text></svg>" />
+</head>
+<body>
+  <main class="page">
+    <header class="page-header">
+      <h1>Packing Checklist</h1>
+      <p class="subtitle">Tick items off as you pack them. Your progress is saved automatically.</p>
+    </header>
+
+    <section class="overall">
+      <div class="overall-track">
+        <div id="overall-fill" class="overall-fill"></div>
+      </div>
+      <p id="overall-label" class="overall-label">0 / 0 packed</p>
+    </section>
+
+    <div class="lists">
+      <section class="list-card" data-list="rucksack">
+        <div class="list-card-header">
+          <h2><span aria-hidden="true">🎒</span> Rucksack</h2>
+          <span class="count" data-count="rucksack">0 / 0</span>
+        </div>
+        <ul class="checklist" id="rucksack-list"></ul>
+      </section>
+
+      <section class="list-card" data-list="case">
+        <div class="list-card-header">
+          <h2><span aria-hidden="true">🧳</span> Case</h2>
+          <span class="count" data-count="case">0 / 0</span>
+        </div>
+        <ul class="checklist" id="case-list"></ul>
+      </section>
+    </div>
+
+    <footer class="page-footer">
+      <button id="reset-btn" type="button">Reset all</button>
+    </footer>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
