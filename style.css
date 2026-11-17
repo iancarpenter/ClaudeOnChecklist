@@ -1,140 +1,219 @@
+/* Teletext skin: the 8-colour palette, black screen, blocky monospace type. */
 :root {
-  --bg: #f5f6f8;
-  --surface: #ffffff;
-  --text: #1c1e21;
-  --muted: #6b7280;
-  --border: #e3e5e8;
-  --accent: #2f6fed;
-  --accent-soft: #e8f0fe;
-  --done: #22a06b;
-  --shadow: 0 1px 2px rgba(16, 24, 40, 0.06), 0 1px 3px rgba(16, 24, 40, 0.08);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #14161a;
-    --surface: #1e2126;
-    --text: #eceef1;
-    --muted: #9aa1ac;
-    --border: #2c2f36;
-    --accent: #5b8def;
-    --accent-soft: #22314f;
-    --done: #35c087;
-    --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.5);
-  }
+  --black: #000000;
+  --red: #ff0000;
+  --green: #00ff00;
+  --yellow: #ffff00;
+  --blue: #0000ff;
+  --magenta: #ff00ff;
+  --cyan: #00ffff;
+  --white: #ffffff;
+  --font: "Courier New", Consolas, "Lucida Console", monospace;
 }
 
 * {
   box-sizing: border-box;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  background: var(--bg);
-  color: var(--text);
+  font-family: var(--font);
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 1.4;
+  background: var(--black);
+  color: var(--white);
+  -webkit-font-smoothing: none;
+  font-smooth: never;
+}
+
+/* Faint CRT scanlines. */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0) 0,
+    rgba(0, 0, 0, 0) 2px,
+    rgba(0, 0, 0, 0.25) 3px
+  );
 }
 
 .page {
   max-width: 880px;
   margin: 0 auto;
-  padding: 2.5rem 1.25rem 4rem;
+  padding: 1rem 16px 3rem;
 }
 
+/* Header row, e.g. "P100  PACKFAX 100  Tue 17 Nov 12:34/56" */
+.status-row {
+  display: flex;
+  gap: 1ch;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+  white-space: pre;
+}
+
+.status-page,
+.status-service {
+  color: var(--white);
+}
+
+.status-clock {
+  color: var(--yellow);
+}
+
+/* Title banner */
 .page-header {
-  text-align: center;
-  margin-bottom: 1.75rem;
+  margin-bottom: 1.5rem;
 }
 
 .page-header h1 {
-  margin: 0 0 0.35rem;
-  font-size: 1.9rem;
+  margin: 0;
+  padding: 0.9em 1ch;
+  background: var(--blue);
+  color: var(--yellow);
+  font-size: 1.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-align: center;
+}
+
+/* Teletext double-height characters: stretch vertically, keep width. */
+.double-height {
+  display: inline-block;
+  transform: scaleY(2);
+  transform-origin: center;
+}
+
+/* Strip of chunky mosaic "sixel" blocks above and below the title. */
+.mosaic {
+  height: 12px;
+  background:
+    repeating-linear-gradient(90deg, var(--cyan) 0 12px, transparent 12px 24px) top / 100% 6px no-repeat,
+    repeating-linear-gradient(90deg, transparent 0 12px, var(--magenta) 12px 24px) bottom / 100% 6px no-repeat,
+    var(--blue);
+}
+
+.mosaic-flip {
+  transform: scaleX(-1);
 }
 
 .subtitle {
-  margin: 0;
-  color: var(--muted);
-  font-size: 0.95rem;
+  margin: 1rem 0 0;
+  color: var(--cyan);
+  font-size: 1rem;
 }
 
+/* Overall progress, drawn as a row of solid blocks */
 .overall {
-  max-width: 480px;
   margin: 0 auto 2rem;
 }
 
 .overall-track {
-  height: 10px;
-  border-radius: 999px;
-  background: var(--border);
-  overflow: hidden;
+  height: 20px;
+  background: repeating-linear-gradient(90deg, #333 0 18px, var(--black) 18px 20px);
 }
 
 .overall-fill {
   height: 100%;
   width: 0%;
-  background: linear-gradient(90deg, var(--accent), var(--done));
-  transition: width 0.25s ease;
+  background: repeating-linear-gradient(90deg, var(--green) 0 18px, var(--black) 18px 20px);
 }
 
 .overall-label {
-  text-align: center;
   margin: 0.5rem 0 0;
-  font-size: 0.85rem;
-  color: var(--muted);
+  color: var(--green);
 }
 
+.overall-label.complete {
+  color: var(--yellow);
+  animation: teletext-flash 1s steps(1) infinite;
+}
+
+@keyframes teletext-flash {
+  50% {
+    visibility: hidden;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .overall-label.complete {
+    animation: none;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* Lists */
 .lists {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 1.25rem;
+  gap: 2ch;
 }
 
 @media (max-width: 640px) {
+  body {
+    font-size: 16px;
+  }
   .lists {
     grid-template-columns: 1fr;
   }
 }
 
 .list-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 1.25rem;
-  box-shadow: var(--shadow);
+  background: var(--black);
 }
 
 .list-card-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 0.75rem;
+  gap: 1ch;
+  padding: 0.3em 1ch;
+  margin-bottom: 0.5rem;
+}
+
+.list-card[data-list="rucksack"] .list-card-header {
+  background: var(--red);
+}
+
+.list-card[data-list="case"] .list-card-header {
+  background: var(--magenta);
 }
 
 .list-card-header h2 {
   margin: 0;
   font-size: 1.15rem;
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
+  color: var(--white);
+  text-transform: uppercase;
+}
+
+.page-no {
+  color: var(--yellow);
+  margin-right: 1ch;
 }
 
 .count {
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: var(--muted);
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  padding: 0.2rem 0.6rem;
+  color: var(--black);
+  background: var(--yellow);
+  padding: 0 1ch;
+  white-space: nowrap;
 }
 
 .checklist {
   list-style: none;
   margin: 0;
   padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
 }
 
 .checklist li {
@@ -144,52 +223,88 @@ body {
 .checklist label {
   display: flex;
   align-items: center;
-  gap: 0.65rem;
+  gap: 1.5ch;
   width: 100%;
-  padding: 0.55rem 0.6rem;
-  border-radius: 10px;
+  padding: 0.35em 1ch;
   cursor: pointer;
-  transition: background 0.15s ease;
 }
 
 .checklist label:hover {
-  background: var(--bg);
+  background: var(--blue);
 }
 
+/* Checkbox as a single character cell: empty block or solid green block. */
 .checklist input[type="checkbox"] {
-  width: 1.15rem;
-  height: 1.15rem;
-  accent-color: var(--accent);
+  appearance: none;
+  -webkit-appearance: none;
+  margin: 0;
+  width: 1.1em;
+  height: 1.1em;
   flex-shrink: 0;
+  border: 3px solid var(--white);
+  background: var(--black);
+  border-radius: 0;
   cursor: pointer;
+}
+
+.checklist input[type="checkbox"]:checked {
+  background: var(--green);
+  border-color: var(--green);
+}
+
+.checklist input[type="checkbox"]:focus-visible {
+  outline: 3px solid var(--yellow);
+  outline-offset: 2px;
 }
 
 .checklist .item-text {
-  font-size: 0.98rem;
+  color: var(--white);
 }
 
+/* Teletext has no strikethrough, so packed items change colour instead. */
 .checklist input[type="checkbox"]:checked + .item-text {
-  color: var(--muted);
-  text-decoration: line-through;
+  color: var(--green);
 }
 
-.page-footer {
+/* Fastext bar: red / green / yellow / cyan keys */
+.fastext {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1ch;
+  margin-top: 2.5rem;
+}
+
+.fx {
+  display: block;
+  padding: 0.4em 0.5ch;
+  font: inherit;
   text-align: center;
-  margin-top: 2rem;
-}
-
-#reset-btn {
-  background: transparent;
-  border: 1px solid var(--border);
-  color: var(--muted);
-  padding: 0.55rem 1.1rem;
-  border-radius: 999px;
-  font-size: 0.85rem;
+  text-decoration: none;
+  text-transform: uppercase;
+  background: var(--black);
+  border: 0;
+  border-radius: 0;
   cursor: pointer;
-  transition: border-color 0.15s ease, color 0.15s ease;
 }
 
-#reset-btn:hover {
-  border-color: var(--accent);
-  color: var(--accent);
+.fx:hover,
+.fx:focus-visible {
+  color: var(--black);
+  outline: none;
+}
+
+.fx-red { color: var(--red); }
+.fx-green { color: var(--green); }
+.fx-yellow { color: var(--yellow); }
+.fx-cyan { color: var(--cyan); }
+
+.fx-red:hover, .fx-red:focus-visible { background: var(--red); }
+.fx-green:hover, .fx-green:focus-visible { background: var(--green); }
+.fx-yellow:hover, .fx-yellow:focus-visible { background: var(--yellow); }
+.fx-cyan:hover, .fx-cyan:focus-visible { background: var(--cyan); }
+
+@media (max-width: 420px) {
+  .fastext {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
