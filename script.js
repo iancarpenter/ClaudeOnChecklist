@@ -97,7 +97,21 @@ function updateCounts() {
   const overallLabel = document.getElementById("overall-label");
   const pct = totalItems === 0 ? 0 : Math.round((totalChecked / totalItems) * 100);
   overallFill.style.width = `${pct}%`;
-  overallLabel.textContent = `${totalChecked} / ${totalItems} packed`;
+  const complete = totalItems > 0 && totalChecked === totalItems;
+  overallLabel.textContent = complete
+    ? `${totalChecked} / ${totalItems} packed - ALL PACKED`
+    : `${totalChecked} / ${totalItems} packed`;
+  overallLabel.classList.toggle("complete", complete);
+}
+
+// Ceefax-style header clock, e.g. "Tue 17 Nov 12:34/56".
+function tickClock() {
+  const now = new Date();
+  const day = now.toLocaleDateString("en-GB", { weekday: "short" });
+  const month = now.toLocaleDateString("en-GB", { month: "short" });
+  const pad = (n) => String(n).padStart(2, "0");
+  document.getElementById("clock").textContent =
+    `${day} ${pad(now.getDate())} ${month} ${pad(now.getHours())}:${pad(now.getMinutes())}/${pad(now.getSeconds())}`;
 }
 
 document.getElementById("reset-btn").addEventListener("click", () => {
@@ -108,3 +122,5 @@ document.getElementById("reset-btn").addEventListener("click", () => {
 });
 
 render();
+tickClock();
+setInterval(tickClock, 1000);
